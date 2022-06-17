@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce</title>
+    <style>
+        table,
+        td,
+        th,
+        tr {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 2vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="max-width:75vw;">
+        <fieldset>
+            <legend>Add Product</legend>
+            <form id="productForm">
+                <input type="text" placeholder="Product Name" id="productName">
+                <input type="text" placeholder="Product Preview" id="productPreview">
+                <select id="productCategory">
+                    <option value="null" selected>Choose Category</option>
+                    <option value="General">General</option>
+                    <option value="FnB">FnB</option>
+                </select>
+                <input type="number" placeholder="Stock" id="productStock">
+                <input type="number" placeholder="Price" id="productPrice">
+                <input type="date" placeholder="Exp. Date" id="productExp" disabled>
+            </form>
+            <button type="button" onclick="submitDatabase(), updateTable()" style="margin: 5px 0 ">Submit Product</button>
+            <br>
+            
+            <form id="filterForm">
+                <input type="text" placeholder="Product Name" id="filterName">
+                <input type="text" placeholder="Product SKU" id="filterSKU">
+                <select id="filterCategory">
+                    <option value="" selected>Choose Category</option>
+                    <option value="General">General</option>
+                    <option value="FnB">FnB</option>
+                </select>
+                <input type="number" placeholder="Product Price" id="filterPrice">
+            </form>
+            <button type="button" onclick="search()" style="margin: 5px 0;">Search</button>
+            <button type="button" onclick="updateTable()" style="margin: 5px 0;">Reset</button>
+        </fieldset>
+        <table style="margin-top: 15px;">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>SKU</th>
+                    <th>Preview</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th style="width: 80px;">Price</th>
+                    <th>Exp. Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="list-Product"></tbody>
+        </table>
+    </div>
+</body>
+<script src="./index.js"></script>
+
+</html>
