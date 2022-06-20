@@ -1,26 +1,29 @@
 class Product {
-    constructor(_name, _stock, _price, _category, _picture, _id) {
+    constructor(_name, _stock, _price, _category, _picture, _id, _qty) {
         this.name = _name;
         this.stock = _stock;
         this.price = _price;
         this.category = _category;
         this.picture = _picture;
         this.id = _id;
+        this.qty = _qty;
     }
 }
 
 class Food extends Product {
-    constructor(_name, _stock, _price, _category, _exp, _picture, _id) {
-        super(_name, _stock, _price, _category, _picture, _id);
+    constructor(_name, _stock, _price, _category, _exp, _picture, _id, _qty) {
+        super(_name, _stock, _price, _category, _picture, _id, _qty);
         this.exp = _exp;
     }
 }
 
 let produk = [
-    new Product("Baju", 10, 15000, "General", "https://lzd-img-global.slatic.net/g/p/2f8ef9e37811c10f67c14f83eb3230b9.jpg_720x720q80.jpg_.webp", "SKU-1-629348"),
-    new Food("Ayam", 12, 25000, "FnB", "2022-06-30", "https://www.resepistimewa.com/wp-content/uploads/cara-membuat-ayam-bakar-kecap.jpg", "SKU-2-693487")
+    new Product("Baju", 10, 15000, "General", "https://lzd-img-global.slatic.net/g/p/2f8ef9e37811c10f67c14f83eb3230b9.jpg_720x720q80.jpg_.webp", "SKU-1-629348", 0),
+    new Food("Ayam", 12, 25000, "FnB", "2022-06-30", "https://www.resepistimewa.com/wp-content/uploads/cara-membuat-ayam-bakar-kecap.jpg", "SKU-2-693487", 0)
 ];
 let lastId = 2;
+
+let cart = [];
 
 document.getElementById("productForm").onchange = function () {
     if (productCategory.value != "FnB") {
@@ -68,6 +71,8 @@ function updateTable() {
             <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
+            <br>
+            <button type="button" onclick = "buy('${produk[i].id}')">Buy</button>
             </td></form>
             </tr>`;
         } else {
@@ -86,6 +91,8 @@ function updateTable() {
             <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
+            <br>
+            <button type="button" onclick = "buy('${produk[i].id}')">Buy</button>
             </td></form>
             </tr>`;
         }
@@ -136,6 +143,8 @@ function search() {
                 <button type="button" onclick= "editData('${value.id}')">Edit</button>
                 <br>
                 <button type="button" onclick="deleteRow(${index})">Delete</button>
+                <br>
+                <button type="button" onclick="buy(${value.id})">Buy</button>
                 </td>
                 </tr>`);
                 }
@@ -199,6 +208,8 @@ function editData(idEdit) {
             <button type="button" onclick = "editData('${produk[idx].id}')">Edit</button>
             <br>
             <button type="button" onclick="Delete(${[idx]})">Delete</button>
+            <br>
+            <button type="button" onclick = "buy('${produk[idx].id}')">Buy</button>
             </td>
             </tr>`
         }
@@ -210,10 +221,94 @@ function save(idEdit) {
     let nameedit = document.getElementById("edit-name").value;
     let stockedit = document.getElementById("edit-stock").value;
     let priceedit = document.getElementById("edit-price").value;
-    nameedit == ""? "" : produk[index].name = nameedit;
-    stockedit == ""? "" : produk[index].stock = stockedit;
-    priceedit == ""? "" : produk[index].price = priceedit.toLocaleString("id");
+    nameedit == "" ? "" : produk[index].name = nameedit;
+    stockedit == "" ? "" : produk[index].stock = stockedit;
+    priceedit == "" ? "" : produk[index].price = priceedit.toLocaleString("id");
     updateTable();
 }
 
+function buy(idEdit) {
+    let index = produk.findIndex((val) => val.id == `${idEdit}`);
+    produk.forEach((v, i) => {
+        if (i == index) {
+            if (!cart.includes(produk[i])) {
+                cart.push(produk[i]);
+                cart[cart.length-1].qty += 1;
+                if (produk[i].stock <= 0) {
+                    alert('Stock Habis');
+                } else if (cart.includes(produk[i])){
+                    produk[i].stock -= 1;
+                    printCart();
+                    updateTable();
+                }
+            } else if (cart.includes(produk[i])){
+                let nomor = cart.findIndex((val) => val.id == produk[i].id);
+                cart[nomor].qty += 1;
+                if (produk[i].stock <= 0) {
+                    alert('Stock Habis');
+                } else {
+                    produk[i].stock -= 1;
+                    printCart();
+                    updateTable();
+                }
+            }
+        } 
+    })
+}
+
+function printCart() {
+    document.getElementById("cart-list").innerHTML = '';
+    cart.forEach((val, idx) => {
+        if (val.qty > 0){
+        let subtotal = parseInt(val.price) * parseInt(val.qty);
+        document.getElementById("cart-list").innerHTML += `
+        <tr>
+        <td>${idx + 1}.</td>
+        <td>${val.id}</td>
+        <td><img src='${val.picture}' width=150px;></td>
+        <td>${val.name}</td>
+        <td style="width: 150px; padding: 15px 0 15px 5px;">Rp. ${val.price.toLocaleString("id")}</td>
+        <td style="margin:auto; padding:30px;"><button type="button" onclick="minusStock('${val.id}')">-</button> ${val.qty} <button type="button" onclick="plusStock('${val.id}')">+</button></td>
+        <td>Rp. ${subtotal.toLocaleString("id")}</td>
+        <td><button type="button">Delete</button></td>
+        </tr>`
+    } else {
+        cart.splice[idx,1];
+    }
+    })
+}
+
+function deleteCart(idEdit) {
+    let index = cart.findIndex((val) => val.id == `${idEdit}`);
+    cart.splice(index, 1);
+    printCart();
+}
+
+function minusStock(idEdit) {
+    let index = cart.findIndex((val) => val.id == `${idEdit}`);
+    cart[index].qty--;
+    printCart()
+}
+
+function plusStock(idEdit) {
+    let index = cart.findIndex((val) => val.id == `${idEdit}`);
+    cart[index].qty++;
+    if (produk[i].qty > produk[i].stock) {
+        alert('Stock Habis');
+    } else {
+        printCart();
+    }
+}
+
+function clearCart() {
+    cart = [];
+    produk.forEach(val => {
+        val.qty=0;
+    })
+    document.getElementById("cart-list").innerHTML = "";
+}
+
 updateTable();
+//tambah button beli di action, onclick --> produk akan masuk ke tabel cart, dan stock otomatis -1, dan qty nambah 1
+//di dalem qty ada button increment decrement
+// di action ada button delete
