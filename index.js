@@ -62,7 +62,7 @@ function updateTable() {
             <td id="name${i}">${produk[i].name}</td>
             <td>${produk[i].category}</td>
             <td id="stock${i}">${produk[i].stock}</td>
-            <td id="price${i}">Rp. ${produk[i].price}</td>
+            <td id="price${i}">Rp. ${produk[i].price.toLocaleString("id")}</td>
             <td>${produk[i].exp}</td>
             <td id="button${i}">
             <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
@@ -80,7 +80,7 @@ function updateTable() {
             <td id="name${i}">${produk[i].name}</td>
             <td>${produk[i].category}</td>
             <td id="stock${i}">${produk[i].stock}</td>
-            <td id="price${i}">Rp. ${produk[i].price}</td>
+            <td id="price${i}">Rp. ${produk[i].price.toLocaleString("id")}</td>
             <td></td>
             <td id="button${i}">
             <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
@@ -193,7 +193,7 @@ function editData(idEdit) {
             <td>${produk[idx].name}</td>
             <td>${produk[idx].category}</td>
             <td>${produk[idx].stock}</td>
-            <td>${produk[idx].price}</td>
+            <td>${produk[idx].price.toLocaleString("id")}</td>
             <td>${produk[idx].exp}</td>
             <td>
             <button type="button" onclick = "editData('${produk[idx].id}')">Edit</button>
@@ -212,7 +212,7 @@ function save(idEdit) {
     let priceedit = document.getElementById("edit-price").value;
     nameedit == ""? "" : produk[index].name = nameedit;
     stockedit == ""? "" : produk[index].stock = stockedit;
-    priceedit == ""? "" : produk[index].price = priceedit;
+    priceedit == ""? "" : produk[index].price = priceedit.toLocaleString("id");
     updateTable();
 }
 
