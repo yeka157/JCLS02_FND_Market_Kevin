@@ -133,7 +133,7 @@ function search() {
                 <td>Rp. ${value.price.toLocaleString("id")}</td>
                 <td>${value.exp ? value.exp : ""}</td>
                 <td>
-                <button type="button">Edit</button>
+                <button type="button" onclick= "editData('${value.id}')">Edit</button>
                 <br>
                 <button type="button" onclick="deleteRow(${index})">Delete</button>
                 </td>
