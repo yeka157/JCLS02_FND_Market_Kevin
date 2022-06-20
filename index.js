@@ -254,6 +254,8 @@ function buy(idEdit) {
             }
         } 
     })
+    //ADA ERROR : kalo 1 produk udh habis stocknya, keluar warning habis stock, trs klo beli produk yg lain
+    // produk yg habis stocknya itu ikutan nambah quantitynya
 }
 
 function printCart() {
@@ -270,7 +272,7 @@ function printCart() {
         <td style="width: 150px; padding: 15px 0 15px 5px;">Rp. ${val.price.toLocaleString("id")}</td>
         <td style="margin:auto; padding:30px;"><button type="button" onclick="minusStock('${val.id}')">-</button> ${val.qty} <button type="button" onclick="plusStock('${val.id}')">+</button></td>
         <td>Rp. ${subtotal.toLocaleString("id")}</td>
-        <td><button type="button">Delete</button></td>
+        <td><button type="button" onclick="deleteCart('${val.id}')">Delete</button></td>
         </tr>`
     } else {
         cart.splice[idx,1];
@@ -280,8 +282,13 @@ function printCart() {
 
 function deleteCart(idEdit) {
     let index = cart.findIndex((val) => val.id == `${idEdit}`);
+    let nomor = produk.findIndex((val) => val.id == `${idEdit}`);
+    produk[nomor].stock += cart[index].qty;
+    cart[index].qty = 0;
     cart.splice(index, 1);
     printCart();
+    updateTable();
+    //WORKED
 }
 
 function minusStock(idEdit) {
@@ -306,6 +313,7 @@ function clearCart() {
         val.qty=0;
     })
     document.getElementById("cart-list").innerHTML = "";
+    //WORKED
 }
 
 updateTable();
