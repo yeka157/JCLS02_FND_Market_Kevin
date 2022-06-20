@@ -1,5 +1,3 @@
-
-
 class Product {
     constructor(_name, _stock, _price, _category, _picture, _id) {
         this.name = _name;
@@ -57,36 +55,38 @@ function updateTable() {
         if (produk[i].exp) {
             document.getElementById("list-Product").innerHTML += `
             <tr>
+            <form id="formNumber${i}">
             <td>${i + 1}</td>
             <td>${produk[i].id}</td>
             <td><img src="${produk[i].picture}" width = "150px";></td>
-            <td>${produk[i].name}</td>
+            <td id="name${i}">${produk[i].name}</td>
             <td>${produk[i].category}</td>
-            <td>${produk[i].stock}</td>
-            <td>Rp. ${produk[i].price}</td>
+            <td id="stock${i}">${produk[i].stock}</td>
+            <td id="price${i}">Rp. ${produk[i].price}</td>
             <td>${produk[i].exp}</td>
-            <td>
-            <button>Edit</button>
+            <td id="button${i}">
+            <button type="button" onclick = "editData(${produk[i].id})">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
-            </td>
+            </td></form>
             </tr>`;
         } else {
             document.getElementById("list-Product").innerHTML += `
             <tr>
+            <form id="formNumber${i}">
             <td>${i + 1}</td>
             <td>${produk[i].id}</td>
             <td><img src="${produk[i].picture}"width = "150px";></td>
-            <td>${produk[i].name}</td>
+            <td id="name${i}">${produk[i].name}</td>
             <td>${produk[i].category}</td>
-            <td>${produk[i].stock}</td>
-            <td>Rp. ${produk[i].price}</td>
+            <td id="stock${i}">${produk[i].stock}</td>
+            <td id="price${i}">Rp. ${produk[i].price}</td>
             <td></td>
-            <td>
-            <button>Edit</button>
+            <td id="button${i}">
+            <button type="button" onclick = "editData(${produk[i].id})">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
-            </td>
+            </td></form>
             </tr>`;
         }
     }
@@ -157,6 +157,61 @@ function search() {
 function deleteRow(rowNumber) {
     produk.splice(rowNumber, 1);
     updateTable();
+}
+
+function editData(idEdit) {
+    let index = produk.findIndex((val) => val.id == idEdit);
+
+    document.getElementById("list-Product").innerHTML = "";
+    produk.forEach((val, idx) => {
+        val.category = "General"? (val.exp = "-") : val.exp;
+        val.exp = "" ? "-" : val.exp;
+
+        if (idx == index) {
+            document.getElementById("list-Product").innerHTML += `
+            <tr>
+            <td>${idx + 1}</td>
+            <td>${produk[idx].id}</td>
+            <td><img src="${produk[idx].picture}" width = "150px";></td>
+            <td><input type="text" id="edit-name" placeholder="${val.name}"></td>
+            <td>${produk[idx].category}</td>
+            <td><input type="number" id="edit-stock" placeholder="${val.stock}"></td>
+            <td><input type="number" id="edit-price" placeholder="${val.price}"></td>
+            <td>${produk[idx].exp}</td>
+            <td>
+            <button type="button" onclick = "save(${produk[idx].id})">Save</button>
+            <br>
+            <button type="button" onclick="cancel(${produk[idx].id})">Cancel</button>
+            </td>
+            </tr>`
+        } else {
+            document.getElementById("list-Product").innerHTML += `
+            <tr>
+            <td>${idx + 1}</td>
+            <td>${produk[idx].id}</td>
+            <td><img src="${produk[idx].picture}" width = "150px";></td>
+            <td>${produk[idx].name}</td>
+            <td>${produk[idx].category}</td>
+            <td>${produk[idx].stock}</td>
+            <td>${produk[idx].price}</td>
+            <td>${produk[idx].exp}</td>
+            <td>
+            <button type="button" onclick = "editData(${produk[idx].id})">Edit</button>
+            <br>
+            <button type="button" onclick="Delete(${[idx]})">Delete</button>
+            </td>
+            </tr>`
+        }
+    });
+}
+
+function save(idEdit) {
+    let index = produk.findIndex((val) => val.id == idEdit);
+    let nameedit = document.getElementById("edit-name").value;
+    let stockedit = document.getElementById("edit-stock").value;
+    let priceedit = document.getElementById("edit-price").value;
+    
+
 }
 
 updateTable();
