@@ -65,7 +65,7 @@ function updateTable() {
             <td id="price${i}">Rp. ${produk[i].price}</td>
             <td>${produk[i].exp}</td>
             <td id="button${i}">
-            <button type="button" onclick = "editData(${produk[i].id})">Edit</button>
+            <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
             </td></form>
@@ -83,7 +83,7 @@ function updateTable() {
             <td id="price${i}">Rp. ${produk[i].price}</td>
             <td></td>
             <td id="button${i}">
-            <button type="button" onclick = "editData(${produk[i].id})">Edit</button>
+            <button type="button" onclick = "editData('${produk[i].id}')">Edit</button>
             <br>
             <button type="button" onclick="deleteRow(${i})">Delete</button>
             </td></form>
@@ -144,7 +144,7 @@ function search() {
     });
 
     result.forEach((value, i) => {
-        document.getElementById("list-Product").innerHTML += `<tr><td>${i+1}</td>
+        document.getElementById("list-Product").innerHTML += `<tr><td>${i + 1}</td>
         ${value}`;
     });
 
@@ -160,12 +160,12 @@ function deleteRow(rowNumber) {
 }
 
 function editData(idEdit) {
-    let index = produk.findIndex((val) => val.id == idEdit);
+    let index = produk.findIndex(val => val.id == `${idEdit}`);
 
     document.getElementById("list-Product").innerHTML = "";
     produk.forEach((val, idx) => {
-        val.category = "General"? (val.exp = "-") : val.exp;
-        val.exp = "" ? "-" : val.exp;
+        val.category == "General" ? (val.exp = "") : val.exp;
+        val.exp == "" ? "-" : val.exp;
 
         if (idx == index) {
             document.getElementById("list-Product").innerHTML += `
@@ -173,15 +173,15 @@ function editData(idEdit) {
             <td>${idx + 1}</td>
             <td>${produk[idx].id}</td>
             <td><img src="${produk[idx].picture}" width = "150px";></td>
-            <td><input type="text" id="edit-name" placeholder="${val.name}"></td>
+            <td><input type="text" id="edit-name" value="${val.name}"></td>
             <td>${produk[idx].category}</td>
-            <td><input type="number" id="edit-stock" placeholder="${val.stock}"></td>
-            <td><input type="number" id="edit-price" placeholder="${val.price}"></td>
+            <td><input type="number" id="edit-stock" value="${val.stock}"></td>
+            <td><input type="number" id="edit-price" value="${val.price}"></td>
             <td>${produk[idx].exp}</td>
             <td>
-            <button type="button" onclick = "save(${produk[idx].id})">Save</button>
+            <button type="button" onclick = "save('${produk[idx].id}')">Save</button>
             <br>
-            <button type="button" onclick="cancel(${produk[idx].id})">Cancel</button>
+            <button type="button" onclick="updateTable()">Cancel</button>
             </td>
             </tr>`
         } else {
@@ -196,7 +196,7 @@ function editData(idEdit) {
             <td>${produk[idx].price}</td>
             <td>${produk[idx].exp}</td>
             <td>
-            <button type="button" onclick = "editData(${produk[idx].id})">Edit</button>
+            <button type="button" onclick = "editData('${produk[idx].id}')">Edit</button>
             <br>
             <button type="button" onclick="Delete(${[idx]})">Delete</button>
             </td>
@@ -206,12 +206,14 @@ function editData(idEdit) {
 }
 
 function save(idEdit) {
-    let index = produk.findIndex((val) => val.id == idEdit);
+    let index = produk.findIndex((val) => val.id == `${idEdit}`);
     let nameedit = document.getElementById("edit-name").value;
     let stockedit = document.getElementById("edit-stock").value;
     let priceedit = document.getElementById("edit-price").value;
-    
-
+    nameedit == ""? "" : produk[index].name = nameedit;
+    stockedit == ""? "" : produk[index].stock = stockedit;
+    priceedit == ""? "" : produk[index].price = priceedit;
+    updateTable();
 }
 
 updateTable();
