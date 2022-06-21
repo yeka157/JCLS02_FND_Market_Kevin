@@ -39,16 +39,17 @@ function submitDatabase() {
     let picture = form.elements["productPreview"].value;
     let name = form.elements["productName"].value;
     let stock = form.elements["productStock"].value;
-    let price = parseInt((form.elements["productPrice"].value)).toLocaleString("id");
+    let price = parseInt((form.elements["productPrice"].value));
     let category = form.elements["productCategory"].value;
     let exp = form.elements["productExp"].value;
     let randomNumber = Math.floor(100000 + Math.random() * 900000);
     let id = `SKU-${lastId}-${randomNumber}`;
+    let qty = 0
 
     if (category == "General") {
-        produk.push(new Product(name, stock, price, category, picture, id));
+        produk.push(new Product(name, stock, price, category, picture, id, qty));
     } else if (category == "FnB") {
-        produk.push(new Food(name, stock, price, category, exp, picture, id));
+        produk.push(new Food(name, stock, price, category, exp, picture, id, qty));
     }
 }
 
@@ -233,10 +234,11 @@ function buy(idEdit) {
         if (i == index) {
             if (!cart.includes(produk[i])) {
                 cart.push(produk[i]);
+                console.log(cart);
                 cart[cart.length - 1].qty += 1;
                 if (produk[i].stock <= 0) {
                     alert('Stock Habis');
-                } else if (cart.includes(produk[i])) {
+                } else {
                     produk[i].stock -= 1;
                     printCart();
                     updateTable();
@@ -263,7 +265,7 @@ function printCart() {
             let subtotal = parseInt(val.price) * parseInt(val.qty);
             document.getElementById("cart-list").innerHTML += `
         <tr>
-        <td>${idx + 1}.</td>
+        <td><input type="checkbox" id='${val.id}'></td>
         <td>${val.id}</td>
         <td><img src='${val.picture}' width=150px;></td>
         <td>${val.name}</td>
@@ -291,10 +293,10 @@ function deleteCart(idEdit) {
 function minusStock(idEdit) {
     let index = cart.findIndex((val) => val.id == `${idEdit}`);
     let i = produk.findIndex((val) => val.id == `${idEdit}`);
-    if (cart[index].qty == 1){
+    if (cart[index].qty == 1) {
         produk[i].qty = 0;
         produk[i].stock += 1;
-        cart.splice(index,1);
+        cart.splice(index, 1);
         printCart();
         updateTable();
     } else {
@@ -318,8 +320,8 @@ function plusStock(idEdit) {
     }
 }
 
-function clearCart() {
-    produk.forEach((val,idx) => {
+function clearCart() { //function yg ga kepake
+    produk.forEach((val, idx) => {
         val.stock += val.qty;
         val.qty = 0;
     })
@@ -328,4 +330,45 @@ function clearCart() {
     document.getElementById("cart-list").innerHTML = "";
 }
 
+function deleteSome() {
+    let clearlist = [];
+    cart.forEach((val, idx) => {
+        let cek = document.getElementById(val.id);
+        if (cek.checked) {
+            let index = produk.findIndex((v) => v.id == val.id);
+            // console.log(index);
+            produk[index].stock += cart[idx].qty;
+            val.qty = 0;
+            // console.log(cart);
+            clearlist.push(val);
+            console.log(clearlist);
+        }
+    })
+    if (clearlist.length > 0) {
+        let hapus = confirm("Apakah Anda yakin mau menghapus?");
+        if (hapus) {
+            cart.forEach((val, idx) => {
+                if (clearlist.includes(val.id)) {
+                    cart.splice(idx, 1);
+                }
+            })
+            document.getElementById("cart-list").innerHTML = '';
+            printCart();
+            updateTable();
+        } else if (!hapus) {
+           
+        }
+    }
+    if (clearlist.length == 0) {
+        alert("Silahkan pilih terlebih dahulu");
+    }
+}
+
 updateTable();
+
+/**
+ * Kolom nomor diganti dengan input checkbox --> utk memberi fitur utk memilih barang mana yg akan dihapus sekaligus (pake Clear Cart)
+ * harusnya pake forEach dicek mana yg di checked
+ * tambah proteksi, setelah pencet button, kasih alert yakin atau tidak, klo true, baru dihapus (pake confirm)
+ * tambah proteksi, kalo gaada yg dicheck trs dipress button, bilang hrs click dulu
+ */
