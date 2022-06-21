@@ -233,15 +233,15 @@ function buy(idEdit) {
         if (i == index) {
             if (!cart.includes(produk[i])) {
                 cart.push(produk[i]);
-                cart[cart.length-1].qty += 1;
+                cart[cart.length - 1].qty += 1;
                 if (produk[i].stock <= 0) {
                     alert('Stock Habis');
-                } else if (cart.includes(produk[i])){
+                } else if (cart.includes(produk[i])) {
                     produk[i].stock -= 1;
                     printCart();
                     updateTable();
                 }
-            } else if (cart.includes(produk[i])){
+            } else if (cart.includes(produk[i])) {
                 let nomor = cart.findIndex((val) => val.id == produk[i].id);
                 cart[nomor].qty += 1;
                 if (produk[i].stock <= 0) {
@@ -252,18 +252,16 @@ function buy(idEdit) {
                     updateTable();
                 }
             }
-        } 
+        }
     })
-    //ADA ERROR : kalo 1 produk udh habis stocknya, keluar warning habis stock, trs klo beli produk yg lain
-    // produk yg habis stocknya itu ikutan nambah quantitynya
 }
 
 function printCart() {
     document.getElementById("cart-list").innerHTML = '';
     cart.forEach((val, idx) => {
-        if (val.qty > 0){
-        let subtotal = parseInt(val.price) * parseInt(val.qty);
-        document.getElementById("cart-list").innerHTML += `
+        if (val.qty > 0) {
+            let subtotal = parseInt(val.price) * parseInt(val.qty);
+            document.getElementById("cart-list").innerHTML += `
         <tr>
         <td>${idx + 1}.</td>
         <td>${val.id}</td>
@@ -274,9 +272,9 @@ function printCart() {
         <td>Rp. ${subtotal.toLocaleString("id")}</td>
         <td><button type="button" onclick="deleteCart('${val.id}')">Delete</button></td>
         </tr>`
-    } else {
-        cart.splice[idx,1];
-    }
+        } else {
+            cart.splice[idx, 1];
+        }
     })
 }
 
@@ -288,35 +286,46 @@ function deleteCart(idEdit) {
     cart.splice(index, 1);
     printCart();
     updateTable();
-    //WORKED
 }
 
 function minusStock(idEdit) {
     let index = cart.findIndex((val) => val.id == `${idEdit}`);
-    cart[index].qty--;
-    printCart()
+    let i = produk.findIndex((val) => val.id == `${idEdit}`);
+    if (cart[index].qty == 1){
+        produk[i].qty = 0;
+        produk[i].stock += 1;
+        cart.splice(index,1);
+        printCart();
+        updateTable();
+    } else {
+        cart[index].qty--;
+        produk[i].stock += 1;
+        printCart()
+        updateTable();
+    }
 }
 
 function plusStock(idEdit) {
     let index = cart.findIndex((val) => val.id == `${idEdit}`);
-    cart[index].qty++;
-    if (produk[i].qty > produk[i].stock) {
+    let i = produk.findIndex((val) => val.id == `${idEdit}`);
+    if (produk[i].stock == 0) {
         alert('Stock Habis');
     } else {
+        cart[index].qty++;
+        produk[i].stock -= 1;
         printCart();
+        updateTable();
     }
 }
 
 function clearCart() {
-    cart = [];
-    produk.forEach(val => {
-        val.qty=0;
+    produk.forEach((val,idx) => {
+        val.stock += val.qty;
+        val.qty = 0;
     })
+    cart = [];
+    updateTable();
     document.getElementById("cart-list").innerHTML = "";
-    //WORKED
 }
 
 updateTable();
-//tambah button beli di action, onclick --> produk akan masuk ke tabel cart, dan stock otomatis -1, dan qty nambah 1
-//di dalem qty ada button increment decrement
-// di action ada button delete
