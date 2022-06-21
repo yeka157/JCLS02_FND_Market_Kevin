@@ -19,9 +19,10 @@ class Food extends Product {
 
 let produk = [
     new Product("Baju", 10, 15000, "General", "https://lzd-img-global.slatic.net/g/p/2f8ef9e37811c10f67c14f83eb3230b9.jpg_720x720q80.jpg_.webp", "SKU-1-629348", 0),
-    new Food("Ayam", 12, 25000, "FnB", "2022-06-30", "https://www.resepistimewa.com/wp-content/uploads/cara-membuat-ayam-bakar-kecap.jpg", "SKU-2-693487", 0)
+    new Food("Ayam", 12, 25000, "FnB", "2022-06-30", "https://www.resepistimewa.com/wp-content/uploads/cara-membuat-ayam-bakar-kecap.jpg", "SKU-2-693487", 0),
+    new Product("Jaket", 15, 150000, "General", "https://cf.shopee.co.id/file/fc03500ac3263284f9e5af2e13a100a1", "SKU-3-267938", 0)
 ];
-let lastId = 2;
+let lastId = 3;
 
 let cart = [];
 
