@@ -357,7 +357,9 @@ function deleteSome() {
             printCart();
             updateTable();
         } else if (!hapus) {
-           
+           cart.forEach((val, idx) => {
+            document.getElementById(val.id).checked = false;
+           })
         }
     }
     if (clearlist.length == 0) {
