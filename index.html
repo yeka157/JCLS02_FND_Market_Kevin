@@ -71,6 +71,7 @@
         <fieldset>
             <legend>Cart List</legend>
             <button type="button" onclick="deleteSome()">Clear Cart</button>
+            <button type="button" onclick="checkOut()">Check Out Cart</button>
             <table style="margin-top:15px;">
                 <thead>
                     <tr>
@@ -86,6 +87,33 @@
                 </thead>
                 <tbody id="cart-list"></tbody>
             </table>
+        </fieldset>
+    </div>
+    <div>
+        <fieldset>
+            <legend>Check Out</legend>
+            <table style="margin-top: 15px;">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody id="checkout-list"></tbody>
+            </table>
+            <table style="margin-top: 15px;">
+                <tbody>
+                    <tr>
+                        <td>Total Pembayaran</td>
+                        <td id="total">Rp. 0,-</td>
+                    </tr>
+                    <tr>
+                        <td>Uang Pembayaran</td>
+                        <td><input type="number" id="duit"><button type="button" onclick="payment()">Payment</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h1 id="alert" style="color: red;"></h1>
         </fieldset>
     </div>
 </body>

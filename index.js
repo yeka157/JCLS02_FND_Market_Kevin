@@ -26,6 +26,8 @@ let lastId = 3;
 
 let cart = [];
 
+let cekout = 0;
+
 document.getElementById("productForm").onchange = function () {
     if (productCategory.value != "FnB") {
         document.getElementById("productExp").disabled = true;
@@ -369,9 +371,60 @@ function deleteSome() {
 
 updateTable();
 
-/**
- * Kolom nomor diganti dengan input checkbox --> utk memberi fitur utk memilih barang mana yg akan dihapus sekaligus (pake Clear Cart)
- * harusnya pake forEach dicek mana yg di checked
- * tambah proteksi, setelah pencet button, kasih alert yakin atau tidak, klo true, baru dihapus (pake confirm)
- * tambah proteksi, kalo gaada yg dicheck trs dipress button, bilang hrs click dulu
- */
+let checkoutList = [];
+
+function checkOut() {
+    let totalsemua = 0;
+    cart.forEach((val, idx) => {
+        let cek = document.getElementById(val.id);
+        if (cek.checked) {
+            console.log(checkoutList);
+            checkoutList.push(val);
+            cart.splice(idx,1);
+            document.getElementById("checkout-list").innerHTML = "";
+        } 
+    })
+    checkoutList.forEach((value, idx) => {
+        let subtotal = parseInt(value.price) * parseInt(value.qty);
+        document.getElementById("checkout-list").innerHTML += `
+        <tr>
+        <td>${value.id}</td>
+        <td>Rp. ${subtotal.toLocaleString("id")}</td>
+        </tr>
+        `
+        totalsemua += subtotal;
+        console.log(checkoutList);
+    })
+    console.log(cart);
+    console.log(checkoutList);
+    console.log(totalsemua);
+    cekout = totalsemua;
+    console.log(cekout);
+    printTotal();
+    printCart();
+}
+
+function printTotal() {
+    document.getElementById("total").innerHTML = `Rp. ${cekout.toLocaleString("id")},-`;
+
+}
+
+function payment() {
+    let uang = document.getElementById("duit").value;
+    if (uang == cekout) {
+        alert("Pembelian Berhasil, Terimakasih!");
+        document.getElementById("checkout-list").innerHTML = "";
+        cekout = 0;
+        printTotal();
+        document.getElementById("duit").value = null;
+    } else if (uang > cekout) {
+        let kembalian = parseInt(uang) - parseInt(cekout);
+        alert(`Pembelian Berhasil, Kembalian Anda Rp. ${kembalian.toLocaleString("id")}. Terimakasih!`);
+        document.getElementById("checkout-list").innerHTML = "";
+        cekout = 0;
+        printTotal();
+        document.getElementById("duit").value = null;
+    } else if (cekout > uang) {
+        document.getElementById("alert").innerHTML = "Uang Anda tidak mencukupi";
+    }
+}
