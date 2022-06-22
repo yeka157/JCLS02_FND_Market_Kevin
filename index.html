@@ -36,7 +36,6 @@
             </form>
             <button type="button" onclick="submitDatabase(), updateTable()" style="margin: 5px 0 ">Submit Product</button>
             <br>
-            
             <form id="filterForm">
                 <input type="text" placeholder="Product Name" id="filterName">
                 <input type="text" placeholder="Product SKU" id="filterSKU">
@@ -49,6 +48,11 @@
             </form>
             <button type="button" onclick="search()" style="margin: 5px 0;">Search</button>
             <button type="button" onclick="updateTable()" style="margin: 5px 0;">Reset</button>
+        </fieldset>
+        <fieldset>
+            <legend>Log In</legend>
+            <input type="text" id="logintext">
+            <button type="button" onclick="login()">Log In</button><h3 id="loginmsg"></h3>
         </fieldset>
         <table style="margin-top: 15px;">
             <thead>
@@ -114,6 +118,23 @@
                 </tbody>
             </table>
             <h1 id="alert" style="color: red;"></h1>
+        </fieldset>
+    </div>
+    <div>
+        <fieldset>
+            <legend>Report Transaction</legend>
+            <table style="margin-top:15px;">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Total Transaction</th>
+                    </tr>
+                </thead>
+                <tbody id="report-list"></tbody>
+            </table>
+            <h2 id="omset">Omset</h2>
         </fieldset>
     </div>
 </body>

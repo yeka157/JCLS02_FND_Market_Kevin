@@ -232,33 +232,37 @@ function save(idEdit) {
 }
 
 function buy(idEdit) {
-    let index = produk.findIndex((val) => val.id == `${idEdit}`);
-    produk.forEach((v, i) => {
-        if (i == index) {
-            if (!cart.includes(produk[i])) {
-                cart.push(produk[i]);
-                console.log(cart);
-                cart[cart.length - 1].qty += 1;
-                if (produk[i].stock <= 0) {
-                    alert('Stock Habis');
-                } else {
-                    produk[i].stock -= 1;
-                    printCart();
-                    updateTable();
-                }
-            } else if (cart.includes(produk[i])) {
-                let nomor = cart.findIndex((val) => val.id == produk[i].id);
-                cart[nomor].qty += 1;
-                if (produk[i].stock <= 0) {
-                    alert('Stock Habis');
-                } else {
-                    produk[i].stock -= 1;
-                    printCart();
-                    updateTable();
+    if (user) {
+        let index = produk.findIndex((val) => val.id == `${idEdit}`);
+        produk.forEach((v, i) => {
+            if (i == index) {
+                if (!cart.includes(produk[i])) {
+                    cart.push(produk[i]);
+                    console.log(cart);
+                    cart[cart.length - 1].qty += 1;
+                    if (produk[i].stock <= 0) {
+                        alert('Stock Habis');
+                    } else {
+                        produk[i].stock -= 1;
+                        printCart();
+                        updateTable();
+                    }
+                } else if (cart.includes(produk[i])) {
+                    let nomor = cart.findIndex((val) => val.id == produk[i].id);
+                    cart[nomor].qty += 1;
+                    if (produk[i].stock <= 0) {
+                        alert('Stock Habis');
+                    } else {
+                        produk[i].stock -= 1;
+                        printCart();
+                        updateTable();
+                    }
                 }
             }
-        }
-    })
+        })
+    } else {
+        alert("Silahkan login terlebih dahulu");
+    }
 }
 
 function printCart() {
@@ -369,8 +373,6 @@ function deleteSome() {
     }
 }
 
-updateTable();
-
 let checkoutList = [];
 
 function checkOut() {
@@ -409,22 +411,76 @@ function printTotal() {
 
 }
 
+class customer {
+    constructor(_user, _tgl,_struk){
+        this.user = user;
+        this.tgl = _tgl;
+        this.struk = _struk;
+    }
+}
+
+let success = [];
+
 function payment() {
     let uang = document.getElementById("duit").value;
     if (uang == cekout) {
         alert("Pembelian Berhasil, Terimakasih!");
         document.getElementById("checkout-list").innerHTML = "";
+        document.getElementById("duit").value = null;
+        let now = new Date()
+        success.push(new customer(user, now, cekout));
+        console.log(success);
         cekout = 0;
         printTotal();
-        document.getElementById("duit").value = null;
+        checkoutList =[];
+        update();
     } else if (uang > cekout) {
         let kembalian = parseInt(uang) - parseInt(cekout);
         alert(`Pembelian Berhasil, Kembalian Anda Rp. ${kembalian.toLocaleString("id")}. Terimakasih!`);
         document.getElementById("checkout-list").innerHTML = "";
+        document.getElementById("duit").value = null;
+        let now = new Date()
+        success.push(new customer(user, now, cekout));
+        console.log(success);
         cekout = 0;
         printTotal();
+        checkoutList =[];
+        update();
         document.getElementById("duit").value = null;
     } else if (cekout > uang) {
         document.getElementById("alert").innerHTML = "Uang Anda tidak mencukupi";
     }
+}
+
+updateTable();
+
+let user = ""
+
+function login() {
+    user = document.getElementById("logintext").value;
+    document.getElementById("loginmsg").innerHTML = "Log In Berhasil!";
+    return user;
+}
+
+let jual = 0;
+
+function update() {
+    jual = 0;
+    document.getElementById("report-list").innerHTML = "";
+    success.forEach((val,idx) => {
+        document.getElementById("report-list").innerHTML += `
+        <tr>
+        <td>${idx+1}.</td>
+        <td>${val.tgl}</td>
+        <td>${val.user}</td>
+        <td>Rp. ${val.struk.toLocaleString("id")}</td>
+        </tr>
+        `
+        jual += val.struk;
+    })
+    document.getElementById("logintext").value = null;
+    document.getElementById("loginmsg").innerHTML = ""
+    document.getElementById("cart-list").innerHTML = "";
+    produk.forEach((val) => val.qty = 0);
+    document.getElementById("omset").innerHTML = `Omset = Rp. ${jual.toLocaleString("id")}`
 }
